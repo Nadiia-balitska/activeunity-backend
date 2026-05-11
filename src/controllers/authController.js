@@ -1,8 +1,9 @@
 const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
+const asyncHandler = require("../utils/asyncHandler");
 
-const registerUser = async (req, res, next) => {
-  try {
+
+const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
@@ -29,13 +30,10 @@ const registerUser = async (req, res, next) => {
         role: user.role,
       },
     });
-  } catch (error) {
-    next(error);
-  }
-};
+ 
+});
 
-const loginUser = async (req, res, next) => {
-  try {
+const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email }).select("+password");
@@ -63,21 +61,16 @@ const loginUser = async (req, res, next) => {
         role: user.role,
       },
     });
-  } catch (error) {
-    next(error);
-  }
-};
+ 
+});
 
-const getCurrentUser = async (req, res, next) => {
-  try {
+const getCurrentUser = asyncHandler(async (req, res) => {
     res.status(200).json({
       success: true,
       user: req.user,
     });
-  } catch (error) {
-    next(error);
-  }
-};
+ 
+});
 
 module.exports = {
   registerUser,

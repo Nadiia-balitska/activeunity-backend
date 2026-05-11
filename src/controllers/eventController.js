@@ -1,7 +1,10 @@
 const Event = require("../models/Event");
 
-const createEvent = async (req, res, next) => {
-  try {
+const asyncHandler = require("../utils/asyncHandler");
+
+
+const createEvent = asyncHandler(async (req, res) => {
+
     const event = await Event.create({
       ...req.body,
       organizer: req.user._id,
@@ -9,13 +12,11 @@ const createEvent = async (req, res, next) => {
     });
 
     res.status(201).json({ success: true, event });
-  } catch (error) {
-    next(error);
-  }
-};
+ 
+});
 
-const getAllEvents = async (req, res, next) => {
-  try {
+const getAllEvents = asyncHandler(async (req, res)=> {
+  
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
     const skip = (page - 1) * limit;
@@ -49,13 +50,9 @@ const getAllEvents = async (req, res, next) => {
       count: events.length,
       events,
     });
-  } catch (error) {
-    next(error);
-  }
-};
+})
 
-const getEventById = async (req, res, next) => {
-  try {
+const getEventById = asyncHandler(async (req, res) => {
     const event = await Event.findById(req.params.id)
       .populate("organizer", "name email")
       .populate("participants", "name email");
@@ -66,13 +63,10 @@ const getEventById = async (req, res, next) => {
     }
 
     res.status(200).json({ success: true, event });
-  } catch (error) {
-    next(error);
-  }
-};
+ 
+});
 
-const updateEvent = async (req, res, next) => {
-  try {
+const updateEvent = asyncHandler(async (req, res) => {
     const event = await Event.findById(req.params.id);
 
     if (!event) {
@@ -94,13 +88,11 @@ const updateEvent = async (req, res, next) => {
     }).populate("organizer", "name email");
 
     res.status(200).json({ success: true, event: updatedEvent });
-  } catch (error) {
-    next(error);
-  }
-};
+ 
+});
 
-const deleteEvent = async (req, res, next) => {
-  try {
+const deleteEvent = asyncHandler(async (req, res) => {
+
     const event = await Event.findById(req.params.id);
 
     if (!event) {
@@ -122,13 +114,11 @@ const deleteEvent = async (req, res, next) => {
       success: true,
       message: "Event deleted successfully",
     });
-  } catch (error) {
-    next(error);
-  }
-};
 
-const joinEvent = async (req, res, next) => {
-  try {
+});
+
+const joinEvent = asyncHandler(async (req, res) => {
+
     const event = await Event.findById(req.params.id);
 
     if (!event) {
@@ -158,13 +148,11 @@ const joinEvent = async (req, res, next) => {
       message: "Joined event successfully",
       event,
     });
-  } catch (error) {
-    next(error);
-  }
-};
+ 
+});
 
-const leaveEvent = async (req, res, next) => {
-  try {
+const leaveEvent = asyncHandler(async (req, res) => {
+  
     const event = await Event.findById(req.params.id);
 
     if (!event) {
@@ -183,13 +171,11 @@ const leaveEvent = async (req, res, next) => {
       message: "Left event successfully",
       event,
     });
-  } catch (error) {
-    next(error);
-  }
-};
+ 
+});
 
-const getEventParticipants = async (req, res, next) => {
-  try {
+const getEventParticipants = asyncHandler(async (req, res) => {
+
     const event = await Event.findById(req.params.id).populate(
       "participants",
       "name email"
@@ -205,10 +191,8 @@ const getEventParticipants = async (req, res, next) => {
       count: event.participants.length,
       participants: event.participants,
     });
-  } catch (error) {
-    next(error);
-  }
-};
+  
+});
 
 module.exports = {
   createEvent,

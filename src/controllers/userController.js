@@ -1,8 +1,9 @@
 const User = require("../models/User");
 const Event = require("../models/Event");
+const asyncHandler = require("../utils/asyncHandler");
 
-const getUserProfile = async (req, res, next) => {
-  try {
+
+const getUserProfile = asyncHandler(async (req, res) => {
     const createdEvents = await Event.find({ organizer: req.user._id }).sort({
       createdAt: -1,
     });
@@ -26,13 +27,10 @@ const getUserProfile = async (req, res, next) => {
       createdEvents,
       joinedEvents,
     });
-  } catch (error) {
-    next(error);
-  }
-};
+  
+});
 
-const updateUserProfile = async (req, res, next) => {
-  try {
+const updateUserProfile = asyncHandler(async (req, res) => {
     const allowedFields = ["name", "avatar"];
 
     allowedFields.forEach((field) => {
@@ -53,10 +51,8 @@ const updateUserProfile = async (req, res, next) => {
         avatar: updatedUser.avatar,
       },
     });
-  } catch (error) {
-    next(error);
-  }
-};
+ 
+});
 
 module.exports = {
   getUserProfile,

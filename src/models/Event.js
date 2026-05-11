@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const EVENT_CATEGORIES = require("../constants/eventCategories");
 const eventSchema = new mongoose.Schema(
   {
     title: {
@@ -18,16 +18,7 @@ const eventSchema = new mongoose.Schema(
 
     category: {
       type: String,
-      enum: [
-        "volunteering",
-        "education",
-        "environment",
-        "charity",
-        "community",
-        "health",
-        "culture",
-        "other",
-      ],
+      enum: EVENT_CATEGORIES,
       default: "other",
     },
 

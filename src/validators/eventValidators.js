@@ -1,15 +1,6 @@
 const { body } = require("express-validator");
 
-const eventCategories = [
-  "volunteering",
-  "education",
-  "environment",
-  "charity",
-  "community",
-  "health",
-  "culture",
-  "other",
-];
+const EVENT_CATEGORIES = require("../constants/eventCategories");
 
 const createEventValidator = [
   body("title")
@@ -28,7 +19,7 @@ const createEventValidator = [
 
   body("category")
     .optional()
-    .isIn(eventCategories)
+    .isIn(EVENT_CATEGORIES)
     .withMessage("Invalid event category"),
 
   body("location")
@@ -63,7 +54,7 @@ const updateEventValidator = [
 
   body("category")
     .optional()
-    .isIn(eventCategories)
+    .isIn(EVENT_CATEGORIES)
     .withMessage("Invalid event category"),
 
   body("date")
