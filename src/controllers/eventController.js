@@ -122,37 +122,40 @@ const deleteEvent = asyncHandler(async (req, res) => {
 });
 
 const joinEvent = asyncHandler(async (req, res) => {
+  const event = await Event.findById(req.params.id);
 
-    const event = await Event.findById(req.params.id);
+  if (!event) {
+    res.status(404);
+    throw new Error("Event not found");
+  }
 
-    if (!event) {
-      res.status(404);
-      throw new Error("Event not found");
-    }
+  if (event.status !== "upcoming") {
+    res.status(400);
+    throw new Error("This event is no longer active");
+  }
 
-    const alreadyJoined = event.participants.some(
-      (participantId) => participantId.toString() === req.user._id.toString()
-    );
+  const alreadyJoined = event.participants.some(
+    (participantId) => participantId.toString() === req.user._id.toString()
+  );
 
-    if (alreadyJoined) {
-      res.status(400);
-      throw new Error("You have already joined this event");
-    }
+  if (alreadyJoined) {
+    res.status(400);
+    throw new Error("You have already joined this event");
+  }
 
-    if (event.participants.length >= event.maxParticipants) {
-      res.status(400);
-      throw new Error("Event has reached maximum participants");
-    }
+  if (event.participants.length >= event.maxParticipants) {
+    res.status(400);
+    throw new Error("Event has reached maximum participants");
+  }
 
-    event.participants.push(req.user._id);
-    await event.save();
+  event.participants.push(req.user._id);
+  await event.save();
 
-    res.status(200).json({
-      success: true,
-      message: "Joined event successfully",
-      event,
-    });
- 
+  res.status(200).json({
+    success: true,
+    message: "Joined event successfully",
+    event,
+  });
 });
 
 const leaveEvent = asyncHandler(async (req, res) => {
