@@ -25,10 +25,6 @@ const getAllEvents = asyncHandler(async (req, res) => {
   if (req.query.category) query.category = req.query.category;
   if (req.query.status) query.status = req.query.status;
 
-  if (!req.query.status) {
-    query.status = "upcoming";
-  }
-
   if (req.query.search) {
     query.$or = [
       { title: { $regex: req.query.search, $options: "i" } },
